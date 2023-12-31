@@ -1,0 +1,9 @@
+name: UnderWaterTNT
+main: me.xemor.underwatertnt.UnderWaterTNT
+version: 1.0
+api-version: 1.13
+author: [Takacick,Xemor_]
+commands:
+ uwt:
+  aliases: [underwatertnt]
+  description: The root command for UnderWater TNT

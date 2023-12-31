@@ -1,0 +1,11 @@
+radius: 3
+prefix: '&8[&6&lUWT&8]'
+messages:
+ missing_permission: '{prefix} &cYou are not allowed to do that!'
+ uwt_radius_wrong_numbers: '{prefix} &c{radius} is not a valid value for the radius!'
+ uwt_radius_success: '{prefix} &aYou set radius to {radius}!'
+ uwt_radius_usage: '{prefix} &cUse /uwt setRadius <radius>'
+
+cannon_blocks:
+- 'COBBLESTONE'
+- 'LAPIS_BLOCK'
