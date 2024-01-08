@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +24,7 @@ public class EntityExplodeListener implements Listener {
 			return;
 		}
 
+
 		if (entity.isOnGround()) {
 			Block occupiedBlock = event.getLocation().getBlock();
 			Material type = event.getLocation().clone().subtract(0, 1, 0).getBlock().getType();
@@ -31,7 +33,6 @@ public class EntityExplodeListener implements Listener {
 				return;
 			}
 		}
-
 		if (UnderWaterTNT.getInstance().getConfiguration().getRadius() <= 0) {
 			return;
 		}
@@ -44,27 +45,13 @@ public class EntityExplodeListener implements Listener {
 		Location centerLocation = entity.getLocation();
 		centerLocation = centerLocation.add(0.5, 0.5, 0.5);
 		for (Location loc : generateSphere(centerLocation, UnderWaterTNT.getInstance().getConfiguration().getRadius())) {
-			if (loc.getBlock().isLiquid()) {
+			Block block = loc.getBlock();
+			if (block.isLiquid()) {
 				loc.getBlock().setType(Material.AIR);
+			} else if (block.getBlockData() instanceof Waterlogged waterlogged) {
+				waterlogged.setWaterlogged(false);
 			}
 		}
-		/*
-		for (BlockFace face : BlockFace.values()) {
-			Block block = centerBlock.getRelative(face);
-			if (block.getType() == Material.WATER) {
-				BlockData blockData = block.getBlockData();
-				block.setType(Material.AIR);
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						if (block.getType() == Material.AIR) {
-							block.setBlockData(blockData);
-						}
-					}
-				}.runTaskLater(UnderWaterTNT.getInstance(), 1L);
-			}
-		}
-		 */
 		entity.setMetadata("ignore-UnderwaterTNT", new FixedMetadataValue(UnderWaterTNT.getInstance(), "w"));
 		if (entity instanceof TNTPrimed) {
 			world.createExplosion(centerBlock.getLocation(), 4f, false, true, entity);
@@ -78,13 +65,6 @@ public class EntityExplodeListener implements Listener {
 
 		event.setCancelled(true);
 
-	}
-
-	@EventHandler
-	public void onDamage(EntityDamageByEntityEvent e) {
-		if (e.getDamager().hasMetadata("ignore-UnderwaterTNT")) {
-			e.setCancelled(true);
-		}
 	}
 
 	private List<Location> generateSphere(Location centerBlock, int radius) {
